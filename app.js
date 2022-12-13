@@ -8,6 +8,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(__dirname + '/public'));
 app.use('/build/',express.static(path.join(__dirname, 'node_modules/three/build')));
 app.use('/jsm/',express.static(path.join(__dirname, 'node_modules/three/examples/jsm')));
+app.use('/fonts/',express.static(path.join(__dirname, 'fonts')));
 
 /*app.use('/hello',(req,res,next) => {
     console.log('in the middleware!');
@@ -30,8 +31,8 @@ app.use('/api',(req,res,next) => {
     res.redirect('/?title='+koo.title);
     });
 app.use('/',(req,res,next) => {
-    console.log('in another middleware!');
-    res.send('<h1>Go away!</h1>');
+    console.log('Root',JSON.stringify(res.body),JSON.stringify(res.query));
+    //res.send('<h1>Go away!</h1>');
 });
 
 

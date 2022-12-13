@@ -1,7 +1,9 @@
 import * as THREE from '/build/three.module.js';
 import {GLTFLoader} from './jsm/loaders/GLTFLoader.js';
 import {OrbitControls} from './jsm/controls/OrbitControls.js';
+import {FontLoader} from './jsm/loaders/FontLoader.js';
 import {TextGeometry} from './jsm/geometries/TextGeometry.js';
+
 
 
 
@@ -21,6 +23,9 @@ let texture;
 let controls;
 let skyGeo;
 let sky;
+let textGeometry;
+//var font = "Script MT Bold";
+//let font;
 
 //console.log("poop",model_container);
 
@@ -51,6 +56,41 @@ const init = () =>{
     loaderz  = new THREE.TextureLoader(),
     texture = loaderz.load( "./images/space.jpg" );
 
+    var loadert = new FontLoader();
+    
+    var textMaterial = new THREE.MeshPhongMaterial( { color: 0xf40000, specular: 0xf9ffff });    
+    
+    console.log(loadert, "FontLoader");
+   
+/*     loadert.manager.onLoad = () => {console.log(this,"load")};
+    loadert.manager.onError = () => {console.log(this,"error")};    
+    loadert.manager.onProgress = () => {console.log(this,"progress b")};  
+    loadert.manager.onStart = () => {console.log(this,"make start start")};      
+    loadert.manager.onChange = (loadert) => {console.log(this,"changed")};    */
+   
+
+    loadert.load( './fonts/Script MT Bold_Regular.json', function (font){
+        
+        
+        textGeometry = new TextGeometry( decodeURIComponent((zvars[0]).split("=")[1]), {
+            font: font,
+            size: 5,
+            height: 1,
+            curveSegments: 12,
+            bevelThickness: 0.1,
+            bevelSize: 0.1,
+            bevelEnabled: true
+                
+        });
+
+      
+        var mesht = new THREE.Mesh( textGeometry, textMaterial );
+        console.log("foop", mesht);
+        scene.add( mesht );
+        let poz = new THREE.Vector3( 0, 1, 0 );
+        mesht.position = poz;
+
+    });  // end loadert.load('',(){});
 
     renderer = new THREE.WebGLRenderer({
         antialias: true, 
@@ -64,7 +104,7 @@ const init = () =>{
 
     sky = new THREE.Mesh(skyGeo, material);
     sky.material.side = THREE.BackSide;
-    console.log(sky);
+    console.log(sky,"sky");
     scene.add(sky);
 
 
@@ -73,7 +113,7 @@ const init = () =>{
     renderer.autoClear = false;
     renderer.setClearColor(0x0000000, 0.0);
 
-    console.log("shoop",renderer);
+    console.log("renderer",renderer);
 
     ambientLight = new THREE.AmbientLight(0xfff3ff, 2);
     scene.add(ambientLight);
@@ -90,7 +130,7 @@ const init = () =>{
 
     });
 
-    /*const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+/*     const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
     const points = [];
     points.push( new THREE.Vector3( - 10, 0, 0 ) );
     points.push( new THREE.Vector3( 0, 10, 0 ) );
@@ -99,13 +139,14 @@ const init = () =>{
     const geometry = new THREE.BufferGeometry().setFromPoints( points );
 
     const line = new THREE.Line( geometry, material );
-    scene.add(line);
-*/
+    scene.add(line); */
+
 
     controls = new OrbitControls (camera, model_container);
 
     animate();
-}
+    
+} // end init()
 
 const render = ()=>{
     renderer.render(scene,camera);
