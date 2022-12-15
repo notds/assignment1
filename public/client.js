@@ -33,7 +33,7 @@ let textGeometry;
 let zvars = (window.location.href).split('?')[(window.location.href).split('?').length-1].split("&");
 console.log(zvars);
 
-create_div_dynamic(zvars[0]);
+
 
 
 const init = () =>{
@@ -58,7 +58,8 @@ const init = () =>{
 
     var loadert = new FontLoader();
     
-    var textMaterial = new THREE.MeshPhongMaterial( { color: 0xf40000, specular: 0xf9ffff });    
+    var textMaterial = new THREE.MeshPhongMaterial( { color: 0x440000, specular: 0x050505, shininess: 100 }); 
+    textMaterial.refractionRatio = 0.95;   
     
     console.log(loadert, "FontLoader");
    
@@ -71,24 +72,43 @@ const init = () =>{
 
     loadert.load( './fonts/Script MT Bold_Regular.json', function (font){
         
+        var _3dt = decodeURIComponent((zvars[0]).split("=")[1]);
+        console.log(typeof _3dt,"76");
+
+        if (typeof _3dt === "undefined") {
+            _3dt = "Hello World";
+        }
+        if (_3dt === "undefined") {
+            _3dt = "Hello World";
+        }        
+        if (typeof _3dt === null) {
+            _3dt = "Hello World";
+        }        
         
-        textGeometry = new TextGeometry( decodeURIComponent((zvars[0]).split("=")[1]), {
+        textGeometry = new TextGeometry(_3dt , {
             font: font,
             size: 5,
             height: 1,
             curveSegments: 12,
             bevelThickness: 0.1,
             bevelSize: 0.1,
+            roughness: 0,
+            transmission: 1,
+            thickness: 2,  
             bevelEnabled: true
                 
         });
 
       
         var mesht = new THREE.Mesh( textGeometry, textMaterial );
+        
+        scene.add( mesht );  
+        mesht.position.set(30, 0, 0);
+        
+        let poz = new THREE.Vector3( 1290, 1, 0 );
+        // mesht.position = poz;
         console.log("foop", mesht);
-        scene.add( mesht );
-        let poz = new THREE.Vector3( 0, 1, 0 );
-        mesht.position = poz;
+        
 
     });  // end loadert.load('',(){});
 
@@ -157,26 +177,6 @@ function animate() {
     requestAnimationFrame(animate);
     render();
 }
-
-function create_div_dynamic(theText){
-    let dv = document.createElement('div'); // create dynamically div tag
-    dv.setAttribute('id',"lyr1");       //give id to it
-    dv.className="divFloat";                 // set the style classname
-    //set the inner styling of the div tag
-    dv.style.position="fixed";
-    dv.style.pixelLeft=20;
-    dv.style.pixelTop=100;
-    dv.style.pixelWidth=10;
-    dv.style.pixelHeight=20;
-    dv.style.zIndex = -1;
-    dv.style.backgroundColor="red";
-    //set the html content inside the div tag
-    dv.innerHTML='<br> '+theText+' <br>';
-    
-    //finally add the div to our body
-    document.body.appendChild(dv);
-}
-
 
 
 window.onload = init;
